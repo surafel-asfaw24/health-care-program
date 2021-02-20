@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 
@@ -20,7 +21,9 @@ import java.util.UUID;
 public class Dependent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private int id;
+    @NotNull(message = "Name must be provided!")
     private String name;
-    private Date birthDay;
+    @NotNull(message = "Birthdate must be provided!")
+    private Date birthDate;
 }

@@ -1,9 +1,9 @@
 package com.collabera.hcp.controller;
 
 import com.collabera.hcp.model.ApiResponse;
+import com.collabera.hcp.model.Dependent;
 import com.collabera.hcp.model.Enrollee;
 import com.collabera.hcp.service.IEnrolleeService;
-import com.collabera.hcp.service.impl.EnrolleeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,26 @@ public class EnrolleeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> removeEnrollee(@PathVariable int id) {
+    public ResponseEntity<ApiResponse> removeEnrollee(@PathVariable("id") int id) {
         logger.info("Remove Enrollee controller invoked!");
         return new ResponseEntity<>(ApiResponse.builder().message("Successfully deleted: " + enrolleeService.removeEnrollee(id)).build(), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/dependent")
+    public ResponseEntity<Enrollee> addDependent(@PathVariable("id") int id, @Valid @RequestBody Dependent dependent) {
+        logger.info("Add Dependent Controller invoked!");
+        return new ResponseEntity<>(enrolleeService.addDependent(dependent, id), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/dependent")
+    public ResponseEntity<Enrollee> removeDependent(@PathVariable("id") int id, @Valid @RequestBody Dependent dependent) {
+        logger.info("Remove Dependent Controller invoked!");
+        return new ResponseEntity<>(enrolleeService.modifyDependent(dependent, id), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/dependent")
+    public ResponseEntity<Enrollee> modifyDependent(@PathVariable("id") int id, @Valid @RequestBody Dependent dependent) {
+        logger.info("Modify Dependent Controller invoked!");
+        return new ResponseEntity<>(enrolleeService.removeDependent(dependent, id), HttpStatus.OK);
     }
 }

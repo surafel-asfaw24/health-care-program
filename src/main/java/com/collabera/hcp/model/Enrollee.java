@@ -26,6 +26,6 @@ public class Enrollee {
     @NotNull(message = "Activation status must be provided!")
     private Boolean status;
     private String phoneNumber;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Dependent> dependents;
 }

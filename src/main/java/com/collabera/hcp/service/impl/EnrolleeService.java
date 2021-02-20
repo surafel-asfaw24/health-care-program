@@ -1,6 +1,7 @@
 package com.collabera.hcp.service.impl;
 
 import com.collabera.hcp.exception.ResourceNotFoundException;
+import com.collabera.hcp.model.Dependent;
 import com.collabera.hcp.model.Enrollee;
 import com.collabera.hcp.repository.IEnrolleeRepository;
 import com.collabera.hcp.service.IEnrolleeService;
@@ -9,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 public class EnrolleeService implements IEnrolleeService {
-    private final IEnrolleeRepository enrolleeRepository;
+    private IEnrolleeRepository enrolleeRepository;
     private Logger logger = LoggerFactory.getLogger(EnrolleeService.class);
 
     @Autowired
@@ -43,11 +46,43 @@ public class EnrolleeService implements IEnrolleeService {
     @Override
     public int removeEnrollee(int id) {
         logger.trace("Remove enrollee service invoked!");
-        enrolleeRepository.findById(id)
+        return enrolleeRepository.findById(id).map(enrollee -> {
+            enrolleeRepository.deleteById(id);
+            return id;
+        }).orElseThrow(() -> new ResourceNotFoundException("Enrollee not found!"));
+    }
+
+    @Override
+    public Enrollee addDependent(Dependent dependent, int id) {
+        logger.trace("Add Dependent service invoked!");
+        Enrollee enrollee = enrolleeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Enrollee not found!"));
+        enrollee.getDependents().add(dependent);
+        return enrolleeRepository.save(enrollee);
+    }
 
-        enrolleeRepository.deleteById(id);
+    @Override
+    public Enrollee modifyDependent(Dependent dependent, int id) {
+        logger.trace("Modify Dependent service invoked!");
+        Enrollee enrollee = enrolleeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollee not found!"));
+        enrollee.setDependents(enrollee.getDependents().stream().peek(_dependent -> {
+            if (_dependent.getId() == dependent.getId()) {
+                _dependent.setName(dependent.getName());
+                _dependent.setBirthDate(dependent.getBirthDate());
+            }
+        }).collect(Collectors.toList()));
+        return enrolleeRepository.save(enrollee);
+    }
 
-        return id;
+    @Override
+    public Enrollee removeDependent(Dependent dependent, int id) {
+        logger.trace("Remove Dependent service invoked!");
+        return enrolleeRepository.findById(id).map(_enrollee -> {
+            _enrollee.setDependents(_enrollee.getDependents().stream()
+                    .filter(_dependent -> _dependent.getId() != dependent.getId())
+                    .collect(Collectors.toList()));
+            return enrolleeRepository.save(_enrollee);
+        }).orElseThrow(() -> new ResourceNotFoundException("Enrollee not found!"));
     }
 }

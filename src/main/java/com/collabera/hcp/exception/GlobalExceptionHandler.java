@@ -33,9 +33,4 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleAllOtherException(Exception exception) {
-        return new ResponseEntity<>(ApiResponse.builder().message(exception.getMessage()).build(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
 }
