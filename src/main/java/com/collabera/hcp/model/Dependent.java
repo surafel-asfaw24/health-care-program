@@ -1,5 +1,6 @@
 package com.collabera.hcp.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(description = "Dependent Model")
 public class Dependent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

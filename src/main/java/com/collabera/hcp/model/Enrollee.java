@@ -1,5 +1,7 @@
 package com.collabera.hcp.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,9 +18,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(description = "Enrollee Model")
 public class Enrollee {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @ApiModelProperty(notes = "Id for Enrollee", name = "Id", value = "123")
     private int id;
     @NotNull(message = "Name must be provided!")
     private String name;
